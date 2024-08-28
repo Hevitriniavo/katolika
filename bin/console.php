@@ -82,7 +82,6 @@ function formatName(string $name, string $command = ''): string
     if ($command === 'do:view') {
         $name = strtolower(str_replace([' ', '_'], '-', $name));
     } else {
-        // Sinon, convertir en PascalCase
         $name = str_replace(['-', '_'], ' ', strtolower($name));
         $name = str_replace(' ', '', ucwords($name));
     }
