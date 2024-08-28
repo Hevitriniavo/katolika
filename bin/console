@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$command = $argv[1] ?? null;
+$name = $argv[2] ?? null;
+
+if ($command) {
+    $internalCommand = "php bin/console.php $command $name";
+    passthru($internalCommand);
+} else {
+    echo "Command not recognized.\n";
+}

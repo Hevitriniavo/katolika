@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Repository;
+
+use App\Core\AbstractRepository;
+use App\Entity\{{name}};
+
+class {{name}}Repository extends AbstractRepository
+{
+    protected function __construct()
+    {
+         parent::__construct({{name}}::class, ["id" => "int"]);
+    }
+
+    public static function createInstance(): self
+    {
+        return new self();
+    }
+}
