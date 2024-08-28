@@ -1,0 +1,27 @@
+# Ignore the Composer vendor directory
+/vendor/
+
+# Ignore the Composer lock file
+composer.lock
+
+# Ignore environment variable files
+.env
+
+# Ignore MacOS system files
+.DS_Store
+
+# Ignore Node.js modules if applicable
+node_modules/
+
+# Ignore PHPStorm project files
+.idea/
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+
+# Ignore cache directories
+/cache/
+/*.cache
