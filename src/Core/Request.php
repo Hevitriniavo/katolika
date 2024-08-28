@@ -8,13 +8,17 @@ class Request
     private array $postParams;
     private array $data;
     private string $method;
+    private array $headers;
+    private array $cookies;
 
-    private function __construct(array $queryParams, array $postParams, array $data, string $method)
+    private function __construct(array $queryParams, array $postParams, array $data, string $method, array $headers, array $cookies)
     {
         $this->queryParams = $queryParams;
         $this->postParams = $postParams;
         $this->data = $data;
         $this->method = $method;
+        $this->headers = $headers;
+        $this->cookies = $cookies;
     }
 
     public static function createFromGlobals(): self
@@ -38,7 +42,20 @@ class Request
             $method = strtoupper($postParams['__method']);
         }
 
-        return new self($queryParams, $postParams, $data, $method);
+        // Retrieve headers
+        $headers = [];
+        foreach ($_SERVER as $key => $value) {
+            if (str_starts_with($key, 'HTTP_')) {
+                $headerKey = str_replace('HTTP_', '', $key);
+                $headerKey = str_replace('_', '-', strtolower($headerKey));
+                $headers[$headerKey] = $value;
+            }
+        }
+
+        // Retrieve cookies
+        $cookies = $_COOKIE;
+
+        return new self($queryParams, $postParams, $data, $method, $headers, $cookies);
     }
 
     public function getMethod(): string
@@ -64,5 +81,38 @@ class Request
     public function getPayload(): array
     {
         return $this->data;
+    }
+
+    public function getHeader(string $key): ?string
+    {
+        $key = strtolower($key);
+        return $this->headers[$key] ?? null;
+    }
+
+    public function getCookie(string $key): ?string
+    {
+        return $this->cookies[$key] ?? null;
+    }
+
+    public function setCookie(string $key, string $value, int $expiry = 0, string $path = '', string $domain = '', bool $secure = false, bool $httponly = false): void
+    {
+        setcookie($key, $value, $expiry, $path, $domain, $secure, $httponly);
+    }
+
+    public function getSession(string $key): mixed
+    {
+        return $_SESSION[$key] ?? null;
+    }
+
+    public function setSession(string $key, mixed $value): void
+    {
+        $_SESSION[$key] = $value;
+    }
+
+    public function startSession(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 }

@@ -14,7 +14,7 @@ abstract class AbstractController
         $baseLayoutPath = $this->getBaseLayoutPath();
 
         if (!file_exists($viewPath)) {
-            return new Response("The view.txt '$templateName' does not exist.");
+            return new Response("The view '$templateName' does not exist.");
         }
 
         extract($variables);
@@ -64,22 +64,11 @@ abstract class AbstractController
         return RESOURCE_PATH . DIRECTORY_SEPARATOR . 'base.php';
     }
 
-    protected function redirect(string $path): Response
+    protected function redirect(string $path, int $statusCode = 302)
     {
+        http_response_code($statusCode);
         header("Location: $path");
         exit();
-    }
-
-    protected function setSession(string $name, mixed $value): Response
-    {
-        $_SESSION[$name] = $value;
-        return new Response($this->getSession($name));
-    }
-
-    protected function getSession(string $name): Response
-    {
-        $value = $_SESSION[$name] ?? null;
-        return new Response($value);
     }
 
 

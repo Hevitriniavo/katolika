@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Middleware;
+use App\Core\Request;
+
+class {{name}}Middleware
+{
+    public function handle(Request $request, callable $next)
+    {
+        return $next($request);
+    }
+}

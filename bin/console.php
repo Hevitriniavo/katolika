@@ -3,8 +3,8 @@
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 $command = $argv[1] ?? '';
 $name = $argv[2] ?? '';
@@ -15,6 +15,11 @@ switch ($command) {
     case 'do:controller':
         if ($name) {
             makeController($name);
+        }
+        break;
+    case 'do:middleware':
+        if ($name) {
+            makeMiddleware($name);
         }
         break;
     case 'do:view':
@@ -202,4 +207,26 @@ function makeService(string $name): void
 function kebabCase(string $string): string
 {
     return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
+}
+
+
+function makeMiddleware(string $name): void
+{
+    $filesystem = new Filesystem();
+    $middlewarePath = __DIR__ . '/../src/Middleware/' . $name . 'Middleware.php';
+
+    if ($filesystem->exists($middlewarePath)) {
+        echo "Middleware $name already exists.\n";
+        return;
+    }
+
+    $template = file_get_contents(__DIR__ . '/templates/middleware.txt');
+    $content = str_replace('{{name}}', $name, $template);
+
+    try {
+        $filesystem->dumpFile($middlewarePath, $content);
+        echo "Middleware $name created successfully.\n";
+    } catch (IOExceptionInterface $exception) {
+        echo "An error occurred while creating the middleware: " . $exception->getMessage() . "\n";
+    }
 }
